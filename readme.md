@@ -4,7 +4,7 @@ This project aims to be a developer tool by opening a path in vscode or to chang
 ## Requirements
 - ```code``` as a valid command to execute vscode
 
-## HOW TO INSTALL
+## Installation
 
 1. Download the script
     1. Using curl
