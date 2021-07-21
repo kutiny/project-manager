@@ -1,0 +1,126 @@
+#! /bin/bash
+
+# author=kutiny
+
+pmConfigFile=$HOME/.pm/config
+pmConfigPath=$HOME/.pm
+pmVersion=v0.0.1
+
+# Initial configuration / File checking
+if ! test -a "$pmConfigPath"; then
+    mkdir $pmConfigPath
+fi
+
+if ! test -f "$pmConfigFile"; then
+    touch $pmConfigFile
+fi
+
+function _pm_config_clean() {
+    sed -i '/^\s*$/d' $pmConfigFile
+}
+
+# Main function
+function _pm() {
+    _pm_config_clean
+
+    # Execute a command
+    if [[ -z "$1" || "$1" == "-s" ]]; then
+        file=$(cat $pmConfigFile)
+        projects=$(echo $file | awk 'BEGIN { FS=";" } /^\s*$/ {next;} { print NR ") " $1 }')
+        lines=$(echo $file | wc | awk '{ print $1 }')
+
+        if [[ "$lines" -gt "0" ]]; then
+            echo -e "\033[31mThere are no projects.\033[31m";
+            echo -e "\033[33mAdd a new one with p -a [name] [path].\033[31m";
+            return
+        fi
+
+        echo $projects
+        echo -e "\033[33m\c"
+        read -p "Select project: "
+        echo -e "\033[0m\c"
+
+        project=$(echo $file | awk -v p=$REPLY 'BEGIN { FS=";" } /^\s*$/ {next;} (NR==p){ print $2 }')
+
+        if [[ -z "$project" ]]; then
+            echo -e "\033[31mInvalid project"
+            return
+        else
+            if [ "$1" == "-s" ]; then
+                cd $project
+            else
+                code $project
+            fi
+        fi
+        return
+    fi
+
+    # List projects
+    if [[ "$1" == "-l" || "$1" == "--list" ]]; then
+        cat $pmConfigFile | awk 'BEGIN { FS=";"} { print NR ": \033[33m" $1 "\033[0m -> "$2 }'
+        return
+    fi
+
+    # Add a project
+    if [[ "$1" == "-a" || "$1" == "--add" ]]; then
+        if [[ -z "$2" || -z "$3" ]]; then
+            echo -e "Usage:\np -a [name] [path]"
+        else
+            echo -e "$2;$3\n" >> $pmConfigFile
+        fi
+        return
+    fi
+
+    # Delete a project
+    if [[ "$1" == "-d" || "$1" == "--delete" ]]; then
+        file=$(cat $pmConfigFile)
+        lines=$(echo $file | wc | awk '{print $1}')
+
+        if [[ "$lines" -gt 0 ]]; then
+            echo -e "\033[31mThere are no projects.\033[31m";
+            return
+        fi
+
+        projects=$(echo $file | awk 'BEGIN { FS=";" } /^\s*$/ {next;} { print NR ") " $1 }')
+
+        echo $projects
+        echo -e "\033[33m\c"
+        read -p "Select project to delete: "
+        echo -e "\033[0m\c"
+
+        lines=$(wc $pmConfigFile | awk '{print $1}')
+
+        if [[ "$REPLY" -gt 0 && "$REPLY" -le "$lines" ]]; then
+            remainProjects=$(echo $file | awk -v p=$REPLY '(NR!=p){ print }')
+            echo $remainProjects > $pmConfigFile
+        else
+            echo -e "\033[31mInvalid project"
+        fi
+
+        return
+    fi
+
+    # Show version
+    if [[ "$1" == "-v" || "$1" == "--version" ]]; then
+        echo -e "Project Manager $pmVersion"
+        return
+    fi
+
+    # Show help
+    if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+        function _pm_print_help_line() {
+            printf "%-18s %-18s %-18s\n" $1 $2 $3
+        }
+
+        _pm_print_help_line "COMMAND" "ALIAS" "DESCRIPTION";
+        _pm_print_help_line "-a [name] [path]" "--add" "Add a new project"
+        _pm_print_help_line "-d" "--delete" "Delete project menu"
+        _pm_print_help_line "-h" "--help" "Show help"
+        _pm_print_help_line "-l" "--list" "Show projects"
+        _pm_print_help_line "-v" "--version" "Show program version"
+        return
+    fi
+}
+
+# Set alias to execute this program with p command
+alias p=_pm
