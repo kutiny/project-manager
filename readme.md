@@ -32,6 +32,7 @@ source ~/.pmrc
     ```
 - Add a new project:
     ```console
+    p -a
     p -a my_project ~/workspace/my-project/
     p --add my_project ~/workspace/my-project/
     ```
