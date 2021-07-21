@@ -1,6 +1,9 @@
 # Project Manager
 This project aims to be a developer tool by opening a path in vscode or to changing current working directory in the running terminal.
 
+## Requirements
+- ```code``` as a valid command to execute vscode
+
 ## HOW TO INSTALL
 
 1. Download the script
