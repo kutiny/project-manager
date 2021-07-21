@@ -38,7 +38,7 @@ function _pm() {
         read -p "Select project: "
         echo -e "\033[0m\c"
 
-        project=$(echo $file | awk -v p=$REPLY 'BEGIN { FS=";" } (NR==p){ print $2 }')
+        project=$(cat $pmConfigFile | awk -v p=$REPLY 'BEGIN { FS=";" } (NR==p){ print $2 }')
 
         if [[ -z "$project" ]]; then
             echo -e "\033[31mInvalid project"
