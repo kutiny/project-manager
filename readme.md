@@ -62,9 +62,7 @@ source ~/.pmrc
     > Config file lives in $HOME/.pm/config
 
 ## Changelog
-- v0.0.3:
-    - Solved some issues
-    - Fixed an issue with the name of projects by adding a new way to add a project (using ```p -a``` command).
+Nothing here yet.
 
 
 **Feel free to report any issues**
