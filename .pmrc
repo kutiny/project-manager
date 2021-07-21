@@ -4,7 +4,7 @@
 
 pmConfigFile="$HOME/.pm/config"
 pmConfigPath="$HOME/.pm"
-pmVersion=v0.0.2
+pmVersion=v0.0.3
 
 # Initial configuration / File checking
 if [[ ! -d "$pmConfigPath" ]]; then
@@ -25,22 +25,20 @@ function _pm() {
 
     # Execute a command
     if [[ -z "$1" || "$1" == "-s" ]]; then
-        file=$(cat $pmConfigFile)
-        projects=$(echo $file | awk 'BEGIN { FS=";" } /^\s*$/ {next;} { print NR ") " $1 }')
-        lines=$(echo $file | wc | awk '{ print $1 }')
+        lines=$(cat $pmConfigFile | wc | awk '{ print $1 }')
 
-        if [[ "$lines" -gt "0" ]]; then
+        if [[ "$lines" -eq "0" ]]; then
             echo -e "\033[31mThere are no projects.\033[31m";
-            echo -e "\033[33mAdd a new one with p -a [name] [path].\033[31m";
+            echo -e "\033[33mAdd a new one with p -a.\033[31m";
             return
         fi
 
-        echo $projects
+        cat $pmConfigFile | awk 'BEGIN { FS=";" } { print NR ") " $1 }'
         echo -e "\033[33m\c"
         read -p "Select project: "
         echo -e "\033[0m\c"
 
-        project=$(echo $file | awk -v p=$REPLY 'BEGIN { FS=";" } /^\s*$/ {next;} (NR==p){ print $2 }')
+        project=$(echo $file | awk -v p=$REPLY 'BEGIN { FS=";" } (NR==p){ print $2 }')
 
         if [[ -z "$project" ]]; then
             echo -e "\033[31mInvalid project"
@@ -63,27 +61,30 @@ function _pm() {
 
     # Add a project
     if [[ "$1" == "-a" || "$1" == "--add" ]]; then
+        pname=$2
+        ppath=$3
         if [[ -z "$2" || -z "$3" ]]; then
-            echo -e "Usage:\np -a [name] [path]"
-        else
-            echo -e "$2;$3\n" >> $pmConfigFile
+            # echo -e "Usage:\np -a [name] [path]"
+            read -p "Project name: "
+            pname=$REPLY
+            read -p "Project path: "
+            ppath=$REPLY
         fi
+        echo -e "$pname;$ppath\n" >> $pmConfigFile
+        echo -e "\033[32mProject $pname added\033[0m"
         return
     fi
 
     # Delete a project
     if [[ "$1" == "-d" || "$1" == "--delete" ]]; then
-        file=$(cat $pmConfigFile)
-        lines=$(echo $file | wc | awk '{print $1}')
+        lines=$(cat $pmConfigFile | wc | awk '{print $1}')
 
-        if [[ "$lines" -gt 0 ]]; then
+        if [[ "$lines" -eq 0 ]]; then
             echo -e "\033[31mThere are no projects.\033[31m";
             return
         fi
 
-        projects=$(echo $file | awk 'BEGIN { FS=";" } /^\s*$/ {next;} { print NR ") " $1 }')
-
-        echo $projects
+        cat $pmConfigFile | awk 'BEGIN { FS=";" } /^\s*$/ {next;} { print NR ") " $1 }'
         echo -e "\033[33m\c"
         read -p "Select project to delete: "
         echo -e "\033[0m\c"
@@ -91,7 +92,7 @@ function _pm() {
         lines=$(wc $pmConfigFile | awk '{print $1}')
 
         if [[ "$REPLY" -gt 0 && "$REPLY" -le "$lines" ]]; then
-            remainProjects=$(echo $file | awk -v p=$REPLY '(NR!=p){ print }')
+            remainProjects=$(cat $pmConfigFile | awk -v p=$REPLY '(NR!=p){ print }')
             echo $remainProjects > $pmConfigFile
         else
             echo -e "\033[31mInvalid project"
@@ -113,7 +114,7 @@ function _pm() {
         }
 
         _pm_print_help_line "COMMAND" "ALIAS" "DESCRIPTION";
-        _pm_print_help_line "-a [name] [path]" "--add" "Add a new project"
+        _pm_print_help_line "-a" "--add" "Add a new project"
         _pm_print_help_line "-d" "--delete" "Delete project menu"
         _pm_print_help_line "-h" "--help" "Show help"
         _pm_print_help_line "-l" "--list" "Show projects"

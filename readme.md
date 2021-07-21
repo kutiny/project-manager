@@ -58,8 +58,13 @@ source ~/.pmrc
 
 ## Known Issues
 
-- The project name must have one word. Unless you modify the config file manually.
+- The project name must have one word (no spaces) when using ```p -a [name] [path]``` command. Unless you modify the config file manually.
     > Config file lives in $HOME/.pm/config
+
+## Changelog
+- v0.0.3:
+    - Solved some issues
+    - Fixed an issue with the name of projects by adding a new way to add a project (using ```p -a``` command).
 
 
 **Feel free to report any issues**
