@@ -6,11 +6,11 @@ This project aims to be a developer tool by opening a path in vscode or to chang
 1. Download the script
     1. Using curl
         ```console=0
-        curl -X GET "https://raw.githubusercontent.com/kutiny/project-manager/master/.pm" > ~/.pmrc
+        curl -X GET "https://raw.githubusercontent.com/kutiny/project-manager/master/.pmrc" > ~/.pmrc
         ```
     2. Using wget
         ```console=0
-        wget "https://raw.githubusercontent.com/kutiny/project-manager/master/.pm" > ~/.pmrc
+        wget "https://raw.githubusercontent.com/kutiny/project-manager/master/.pmrc" > ~/.pmrc
         ```
 2. Add the script into your .bashrc/.zshrc
 ```bash
