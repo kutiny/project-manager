@@ -2,16 +2,16 @@
 
 # author=kutiny
 
-pmConfigFile=$HOME/.pm/config
-pmConfigPath=$HOME/.pm
-pmVersion=v0.0.1
+pmConfigFile="$HOME/.pm/config"
+pmConfigPath="$HOME/.pm"
+pmVersion=v0.0.2
 
 # Initial configuration / File checking
-if ! test -a "$pmConfigPath"; then
+if [[ ! -d "$pmConfigPath" ]]; then
     mkdir $pmConfigPath
 fi
 
-if ! test -f "$pmConfigFile"; then
+if [[ ! -f "$pmConfigFile" ]]; then
     touch $pmConfigFile
 fi
 
