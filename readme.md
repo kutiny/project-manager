@@ -10,7 +10,7 @@ This project aims to be a developer tool by opening a path in vscode or to chang
         ```
     2. Using wget
         ```console=0
-        wget "https://raw.githubusercontent.com/kutiny/project-manager/master/.pmrc" > ~/.pmrc
+        wget "https://raw.githubusercontent.com/kutiny/project-manager/master/.pmrc"
         ```
 2. Add the script into your .bashrc/.zshrc
 ```bash
