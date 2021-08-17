@@ -3,6 +3,8 @@ This project aims to be a developer tool by opening a path in vscode or to chang
 
 ## Requirements
 - ```code``` as a valid command to execute vscode
+- ```sed``` (pre-installed in some linux distros)
+- ```awk``` (pre-installed in some linux distros)
 
 ## Installation
 
